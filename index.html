@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ノリログ — 愛車の維持費、ちゃんと知る。</title>
+<meta name="description" content="給油も、車検も、保険も、税金も。日本の車オーナーのための維持費管理アプリ。">
+<meta property="og:title" content="ノリログ — 愛車の維持費、ちゃんと知る。">
+<meta property="og:description" content="給油も、車検も、保険も、税金も。日本の車オーナーのための維持費管理アプリ。">
+<meta property="og:image" content="app-icon.png">
+<link rel="icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ───────── Reset ───────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',system-ui,sans-serif;font-weight:400;color:#0B1220;background:#F4F7FB;line-height:1.8;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+::selection{background:#0A7EC8;color:#F4F7FB}
+
+/* ───────── Tokens ───────── */
+:root{
+  --paper:#F4F7FB;
+  --paper-2:#E6EEF6;
+  --ink:#0B1220;
+  --ink-2:#2A3344;
+  --muted:#6A7280;
+  --line:rgba(11,18,32,.09);
+  --accent:#0A7EC8;
+  --accent-ink:#075E96;
+  --accent-soft:#38BDF8;
+  --dark:#071220;
+  --dark-2:#0D1E33;
+  --dark-line:rgba(255,255,255,.08);
+  --dark-muted:rgba(230,238,246,.6);
+}
+
+/* ───────── Utility ───────── */
+.container{max-width:1120px;margin:0 auto;padding:0 clamp(20px,4vw,40px)}
+.narrow{max-width:820px;margin:0 auto;padding:0 clamp(20px,4vw,40px)}
+section{padding:clamp(80px,12vw,140px) 0;position:relative}
+.eyebrow{font-size:12px;letter-spacing:.18em;font-weight:600;color:var(--muted);text-transform:uppercase;display:inline-block}
+.dark .eyebrow{color:var(--dark-muted)}
+h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.3}
+h1{font-size:clamp(34px,5.2vw,64px);font-weight:800;letter-spacing:-.035em;line-height:1.2}
+h2{font-size:clamp(28px,3.8vw,44px);line-height:1.3}
+h3{font-size:clamp(18px,1.6vw,22px)}
+p{color:var(--ink-2)}
+.dark p{color:var(--dark-muted)}
+
+/* ───────── Nav ───────── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;transition:background .3s,border-color .3s,padding .3s}
+.nav.scrolled{background:rgba(244,247,251,.82);backdrop-filter:saturate(1.6) blur(20px);-webkit-backdrop-filter:saturate(1.6) blur(20px);border-bottom:1px solid var(--line);padding:12px 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-.01em}
+.nav-brand img{width:28px;height:28px;border-radius:7px}
+.nav-cta{font-size:13px;font-weight:600;color:var(--ink);padding:9px 18px;border:1px solid var(--line);border-radius:100px;transition:background .2s,border-color .2s}
+.nav-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ───────── Hero ───────── */
+.hero{padding:clamp(120px,18vw,180px) 0 clamp(60px,8vw,100px);position:relative}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(40px,6vw,80px);align-items:center}
+.hero-copy .eyebrow{margin-bottom:28px}
+.hero h1{margin-bottom:28px}
+.hero h1 em{font-style:normal;color:var(--accent-ink);font-weight:800}
+.hero-lead{font-size:clamp(15px,1.3vw,17px);color:var(--ink-2);max-width:460px;margin-bottom:40px}
+.hero-cta-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);padding:14px 22px;border-radius:100px;font-weight:600;font-size:14px;transition:transform .2s,background .2s}
+.btn-primary:hover{background:#000;transform:translateY(-1px)}
+.btn-primary svg{width:18px;height:18px}
+.btn-ghost{font-size:13px;color:var(--muted);padding:14px 8px;font-weight:500;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink)}
+.btn-disabled{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:100px;font-weight:600;font-size:14px;border:1px solid var(--line);color:var(--muted);cursor:default;background:transparent;position:relative}
+.btn-disabled svg{width:18px;height:18px;opacity:.7}
+.btn-disabled .coming{font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--paper-2);color:var(--muted);padding:3px 8px;border-radius:20px;margin-left:4px;font-weight:700}
+.dark .btn-disabled{border-color:var(--dark-line);color:var(--dark-muted)}
+.dark .btn-disabled .coming{background:rgba(255,255,255,.08);color:var(--dark-muted)}
+
+.hero-phone{position:relative;padding:20px;display:flex;justify-content:center}
+.phone-frame{position:relative;width:min(320px,100%);aspect-ratio:1125/2436;border-radius:48px;padding:8px;background:linear-gradient(135deg,#2A2A30,#0E0E12);box-shadow:0 2px 4px rgba(14,14,18,.05),0 30px 60px -20px rgba(14,14,18,.25),0 15px 30px -10px rgba(14,14,18,.2)}
+.phone-frame::before{content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);width:110px;height:30px;background:#000;border-radius:100px;z-index:2}
+.phone-frame img{width:100%;height:100%;object-fit:cover;border-radius:42px;display:block}
+
+/* License plate accent */
+.plate{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;background:#fff;border:2px solid var(--ink);border-radius:6px;font-family:'Inter',monospace;font-size:13px;font-weight:700;letter-spacing:.05em;color:var(--ink);margin-bottom:32px;position:relative}
+.plate-dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
+
+/* ───────── Features (alternating) ───────── */
+.feature{padding:clamp(80px,10vw,120px) 0}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,90px);align-items:center}
+.feature-grid.reverse .feature-media{order:-1}
+.feature-copy .eyebrow{margin-bottom:20px}
+.feature-copy h2{margin-bottom:20px}
+.feature-copy p{font-size:16px;max-width:440px;margin-bottom:24px}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.feature-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--ink-2);line-height:1.6}
+.feature-list li::before{content:'';width:5px;height:5px;background:var(--accent);border-radius:50%;margin-top:10px;flex-shrink:0}
+.feature-media{display:flex;justify-content:center;align-items:center}
+.feature-media .phone-frame{width:min(280px,100%)}
+
+/* ───────── Dark section (grid of details) ───────── */
+.dark{background:var(--dark);color:var(--paper)}
+.dark h1,.dark h2,.dark h3{color:var(--paper)}
+.dark .section-intro{max-width:640px;margin-bottom:60px}
+.dark .section-intro h2{margin-bottom:20px}
+.dark .section-intro p{font-size:16px;color:var(--dark-muted)}
+.capabilities{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dark-line);border:1px solid var(--dark-line);border-radius:16px;overflow:hidden}
+.cap{background:var(--dark);padding:32px;display:flex;flex-direction:column;gap:12px;min-height:180px}
+.cap-icon{width:28px;height:28px;color:var(--paper);opacity:.9}
+.cap h3{font-size:15px;font-weight:600;letter-spacing:0;color:var(--paper)}
+.cap p{font-size:13px;color:var(--dark-muted);line-height:1.7}
+
+/* ───────── Tax section (specs table feel) ───────── */
+.tax{background:var(--paper)}
+.tax-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,60px);align-items:center}
+.tax-card h2{margin-bottom:16px}
+.tax-card p{font-size:15px;margin-bottom:20px}
+.spec-list{font-family:'Inter',sans-serif;font-size:13px;border-top:1px solid var(--line)}
+.spec-list .row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);color:var(--ink-2)}
+.spec-list .row b{font-weight:600;color:var(--ink)}
+
+/* ───────── Gallery ───────── */
+.gallery{background:var(--dark);overflow:hidden;padding:clamp(80px,10vw,120px) 0}
+.gallery-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:50px;gap:24px;flex-wrap:wrap}
+.gallery-head h2{max-width:460px}
+.gallery-nav{display:flex;gap:8px}
+.gallery-nav button{width:44px;height:44px;border-radius:50%;border:1px solid var(--dark-line);color:var(--paper);display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.gallery-nav button:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+.gallery-nav svg{width:18px;height:18px}
+.gallery-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 clamp(20px,4vw,40px) 20px}
+.gallery-track::-webkit-scrollbar{display:none}
+.gallery-item{flex:0 0 auto;width:min(260px,70vw);scroll-snap-align:start;aspect-ratio:1125/2436;border-radius:36px;padding:6px;background:linear-gradient(135deg,#2A2A30,#0E0E12);box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+.gallery-item img{width:100%;height:100%;object-fit:cover;border-radius:30px}
+
+/* ───────── Pricing ───────── */
+.pricing{background:var(--paper)}
+.pricing-head{text-align:center;margin-bottom:60px}
+.pricing-head .eyebrow{margin-bottom:16px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.plan{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column}
+.plan.featured{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:scale(1.02)}
+.plan-name{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.plan.featured .plan-name{color:var(--dark-muted)}
+.plan-badge{display:inline-block;background:var(--accent);color:#fff;font-size:10px;letter-spacing:.1em;padding:3px 8px;border-radius:20px;margin-left:8px;vertical-align:1px}
+.plan-price{display:flex;align-items:baseline;gap:4px;margin-bottom:8px}
+.plan-price .num{font-family:'Inter',sans-serif;font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.plan-price .per{font-size:14px;color:var(--muted)}
+.plan.featured .plan-price .per{color:var(--dark-muted)}
+.plan-sub{font-size:13px;color:var(--muted);margin-bottom:28px;min-height:20px}
+.plan.featured .plan-sub{color:var(--dark-muted)}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px;flex-grow:1}
+.plan-feats li{font-size:13px;display:flex;gap:10px;align-items:flex-start;color:var(--ink-2);line-height:1.6}
+.plan.featured .plan-feats li{color:var(--dark-muted)}
+.plan-feats li::before{content:'';width:14px;height:14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A7EC8' stroke-width='3'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");background-size:contain;background-repeat:no-repeat;flex-shrink:0;margin-top:4px}
+.plan-cta{display:block;text-align:center;padding:13px;border-radius:100px;font-size:13px;font-weight:600;border:1px solid var(--line);color:var(--ink);transition:background .2s,border-color .2s}
+.plan.featured .plan-cta{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.plan-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.plan.featured .plan-cta:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ───────── CTA ───────── */
+.cta{padding:clamp(80px,10vw,140px) 0;text-align:center;background:var(--paper)}
+.cta h2{margin-bottom:20px;max-width:720px;margin-left:auto;margin-right:auto}
+.cta p{font-size:16px;max-width:520px;margin:0 auto 40px}
+
+/* ───────── Footer ───────── */
+.footer{background:var(--dark);color:var(--dark-muted);padding:70px 0 40px;font-size:13px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
+.footer-brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--paper);font-size:15px;margin-bottom:14px}
+.footer-brand img{width:28px;height:28px;border-radius:7px}
+.footer-desc{max-width:300px;line-height:1.8}
+.footer-col h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--paper);margin-bottom:16px;font-weight:600}
+.footer-col a{display:block;padding:6px 0;transition:color .2s}
+.footer-col a:hover{color:var(--paper)}
+.footer-bottom{border-top:1px solid var(--dark-line);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:12px}
+
+/* ───────── Reveal ───────── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ───────── Responsive ───────── */
+@media (max-width:860px){
+  .hero{padding:clamp(100px,20vw,140px) 0 clamp(40px,8vw,60px)}
+  .hero-grid{grid-template-columns:1fr;gap:36px}
+  .hero-phone{order:2;padding:0}
+  .hero-phone .phone-frame{width:min(260px,70vw)}
+  .hero h1{font-size:clamp(32px,8vw,44px)}
+  .hero-cta-row{flex-direction:column;align-items:stretch;gap:10px}
+  .hero-cta-row .btn-primary,.hero-cta-row .btn-disabled{justify-content:center}
+  .feature-grid{grid-template-columns:1fr;gap:28px}
+  .feature-grid.reverse .feature-media{order:0}
+  .feature-media{order:-1}
+  .feature-media .phone-frame{width:min(240px,65vw)}
+  .capabilities{grid-template-columns:1fr 1fr}
+  .cap{padding:24px;min-height:160px}
+  .tax-card{grid-template-columns:1fr;gap:24px;padding:28px}
+  .plans{grid-template-columns:1fr}
+  .plan.featured{transform:none}
+  .gallery-head{margin-bottom:32px}
+  .gallery-item{width:min(220px,65vw)}
+  .cta .hero-cta-row{flex-direction:row;justify-content:center;flex-wrap:wrap}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .footer-brand-col{grid-column:1/-1}
+}
+@media (max-width:520px){
+  .capabilities{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .plate{font-size:11px;padding:6px 10px 6px 8px}
+  .cta .hero-cta-row{flex-direction:column;align-items:stretch}
+  .cta .hero-cta-row .btn-primary,.cta .hero-cta-row .btn-disabled{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <div class="nav-brand">
+      <img src="app-icon.png" alt="">
+      <span>ノリログ</span>
+    </div>
+    <a href="#download" class="nav-cta">ダウンロード</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="plate"><span class="plate-dot"></span>FOR&nbsp;JAPANESE&nbsp;DRIVERS</span>
+        <h1>愛車の維持費、<br>ちゃんと<em>知る</em>。</h1>
+        <p class="hero-lead">給油も、車検も、保険も、税金も。ひとつのアプリに記録して、年に何にいくら使ったのかを正確に見える化します。</p>
+        <div class="hero-cta-row">
+          <!-- TODO: App Store公開後にURLを差し替え -->
+          <a href="https://apps.apple.com/jp/app/XXXXXXXXXX" class="btn-primary" id="appstore-link">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            App Store
+          </a>
+          <span class="btn-disabled" role="button" aria-disabled="true" title="Google Playは準備中です">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.8L13.2 12 3.6 21.2c-.4-.2-.6-.6-.6-1.1V3.9c0-.5.2-.9.6-1.1zm11.2 10.3l2.5 2.5-10.8 6.3 8.3-8.8zm3.9-2.2c.6.3.9.8.9 1.4s-.3 1-.9 1.4l-2.6 1.5-2.7-2.9 2.7-2.9 2.6 1.5zM14.8 11l-8.3-8.8 10.8 6.3-2.5 2.5z"/></svg>
+            Google Play
+            <span class="coming">準備中</span>
+          </span>
+        </div>
+      </div>
+      <div class="hero-phone">
+        <div class="phone-frame">
+          <img src="screenshots/home-dark.png" alt="ノリログのホーム画面">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURE 1 ═══════════════════ -->
+<section class="feature" id="features">
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-copy reveal">
+        <span class="eyebrow">Record</span>
+        <h2>記録は、数秒で終わる。</h2>
+        <p>ホーム画面から直接ワンタップ。よく使うカテゴリはショートカットに並べて、手入力の手間を最小限にしました。</p>
+        <ul class="feature-list">
+          <li>満タン法・定額・定量、3つの給油モード</li>
+          <li>走行距離を入れれば、燃費は自動で計算</li>
+          <li>自動車税・駐車場代・ローンは自動記録</li>
+          <li>月割り計算（保険12ヶ月・自動車税12ヶ月分散）</li>
+        </ul>
+      </div>
+      <div class="feature-media reveal">
+        <div class="phone-frame"><img src="screenshots/records.png" alt="記録画面"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURE 2 (reverse) ═══════════════════ -->
+<section class="feature" style="padding-top:0">
+  <div class="container">
+    <div class="feature-grid reverse">
+      <div class="feature-copy reveal">
+        <span class="eyebrow">Report</span>
+        <h2>グラフで「使いすぎ」が<br>ひと目でわかる。</h2>
+        <p>月別の棒グラフと、カテゴリ別のドーナツチャート。どの月に、何にお金を使ったのかがはっきり見えます。</p>
+        <ul class="feature-list">
+          <li>月別・年別・カテゴリ別の3軸で分析</li>
+          <li>月割り対象は自動で分散表示</li>
+          <li>複数車両はまとめても、個別でも</li>
+        </ul>
+      </div>
+      <div class="feature-media reveal">
+        <div class="phone-frame"><img src="screenshots/report-monthly.png" alt="レポート画面"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURE 3 ═══════════════════ -->
+<section class="feature" style="padding-top:0">
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-copy reveal">
+        <span class="eyebrow">Simulator</span>
+        <h2>乗り換え前に、<br>5年先のコストを見る。</h2>
+        <p>気になる車種を入力すれば、維持費シミュレーターが年間コストを試算。今の車と比べて、5年後・10年後にいくらの差が出るかも一目で。</p>
+        <ul class="feature-list">
+          <li>AI車種検索で、排気量や車両重量を自動入力</li>
+          <li>自動車税・重量税・燃料費・保険・駐車場を加味</li>
+          <li>EV ↔ ガソリンの比較も、単位を揃えて</li>
+        </ul>
+      </div>
+      <div class="feature-media reveal">
+        <div class="phone-frame"><img src="screenshots/tools.png" alt="ツール画面"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DARK: CAPABILITIES ═══════════════════ -->
+<section class="dark">
+  <div class="container">
+    <div class="section-intro reveal">
+      <span class="eyebrow">Capabilities</span>
+      <h2 style="margin-top:16px">日本の車オーナーのために、<br>日本で作られた機能。</h2>
+      <p>年式ごとに変わる税率、13年超の割増、EVの免除、軽自動車・トラック。複雑な日本の制度を、アプリが丸ごと引き受けます。</p>
+    </div>
+    <div class="capabilities reveal">
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h18M5 6h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/><path d="M7 15h2"/></svg>
+        <h3>自動車税を自動計算</h3>
+        <p>14排気量区分、2019年10月前後の税率差、13年超割増、EV/PHEV/FCV免除まで網羅。</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <h3>車検スケジューラー</h3>
+        <p>初回3年・以降2年を自動算出。1ヶ月前・2週間前・前日の通知を自動で設定。</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg>
+        <h3>EV・PHEV に完全対応</h3>
+        <p>電費 km/kWh、水素 km/kg。ガソリン車と単位を揃えて横並びで比較できます。</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.2 16.2l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.2 7.8l2.8-2.8"/></svg>
+        <h3>AI 車種検索</h3>
+        <p>メーカーと車種を入れるだけで、排気量・重量・燃費の目安を自動入力。</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <h3>通知で、忘れない</h3>
+        <p>車検・保険更新・オイル交換・タイヤ交換・定期点検。時刻も自由に設定できます。</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
+        <h3>iCloud で端末間同期</h3>
+        <p>iPhone と iPad、家族の端末で同じ記録を共有。データはすべて暗号化されたままiCloudに。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ TAX SECTION ═══════════════════ -->
+<section class="tax">
+  <div class="container">
+    <div class="tax-card reveal">
+      <div>
+        <span class="eyebrow">Tax Precision</span>
+        <h2 style="margin-top:16px">13年超の車も、<br>正確な税額を。</h2>
+        <p>年式と排気量、登録月を入れるだけ。ノリログは2019年10月の税制改正、13年・18年の重課、EV免除まで、すべてのパターンを自動で処理します。</p>
+      </div>
+      <div class="spec-list">
+        <div class="row"><span>1,000cc以下（2019.10〜）</span><b>¥25,000</b></div>
+        <div class="row"><span>1,500cc以下（2019.10〜）</span><b>¥30,500</b></div>
+        <div class="row"><span>2,000cc以下（2019.10〜）</span><b>¥36,000</b></div>
+        <div class="row"><span>13年超・割増適用</span><b>¥41,400</b></div>
+        <div class="row"><span>軽自動車（2019.10〜）</span><b>¥10,800</b></div>
+        <div class="row"><span>EV / PHEV / FCV</span><b>免除</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ GALLERY ═══════════════════ -->
+<section class="gallery">
+  <div class="container">
+    <div class="gallery-head">
+      <div class="reveal">
+        <span class="eyebrow">Screens</span>
+        <h2 style="margin-top:16px;color:#F5F2EA">すべての画面を、<br>ひと通り見る。</h2>
+      </div>
+      <div class="gallery-nav">
+        <button id="g-prev" aria-label="前へ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button id="g-next" aria-label="次へ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="gallery-track" id="gallery-track">
+    <div class="gallery-item"><img src="screenshots/home-dark.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/car-detail-civic.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/records.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/report-monthly.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/report-annual.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/tools.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/car-detail-model3.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/home-light.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/features.png" alt=""></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PRICING ═══════════════════ -->
+<section class="pricing">
+  <div class="container">
+    <div class="pricing-head reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2 style="margin-top:16px">まずは無料から。<br>気に入ったら、少し支える。</h2>
+    </div>
+    <div class="plans">
+      <div class="plan reveal">
+        <div class="plan-name">Basic</div>
+        <div class="plan-price"><span class="num">¥0</span><span class="per">/ 永年無料</span></div>
+        <div class="plan-sub">まずは試してみる。</div>
+        <ul class="plan-feats">
+          <li>車両1台の記録</li>
+          <li>レポート直近3ヶ月</li>
+          <li>基本の通知機能</li>
+          <li>広告あり</li>
+        </ul>
+        <a href="#download" class="plan-cta">ダウンロード</a>
+      </div>
+      <div class="plan featured reveal">
+        <div class="plan-name">Lite<span class="plan-badge">人気</span></div>
+        <div class="plan-price"><span class="num">¥200</span><span class="per">/ 月</span></div>
+        <div class="plan-sub">¥1,600 / 年もあり。</div>
+        <ul class="plan-feats">
+          <li>車両の複数台登録</li>
+          <li>レポート無制限</li>
+          <li>iCloud 同期</li>
+          <li>広告なし</li>
+          <li>カスタムリマインダー</li>
+        </ul>
+        <a href="#download" class="plan-cta">ダウンロード</a>
+      </div>
+      <div class="plan reveal">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><span class="num">¥300</span><span class="per">/ 月</span></div>
+        <div class="plan-sub">2週間の無料トライアル。</div>
+        <ul class="plan-feats">
+          <li>Lite のすべての機能</li>
+          <li>カスタムショートカット</li>
+          <li>AI 車種検索（ツール内）</li>
+          <li>燃費・電費換算ツール</li>
+          <li>新機能への優先アクセス</li>
+        </ul>
+        <a href="#download" class="plan-cta">ダウンロード</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CTA ═══════════════════ -->
+<section class="cta" id="download">
+  <div class="container">
+    <div class="reveal">
+      <h2>愛車のことを、<br>もう忘れないように。</h2>
+      <p>ノリログは iPhone・iPad に対応。App Store から無料でダウンロードできます。</p>
+      <div class="hero-cta-row" style="justify-content:center">
+        <!-- TODO: App Store公開後にURLを差し替え -->
+        <a href="https://apps.apple.com/jp/app/XXXXXXXXXX" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+          App Store
+        </a>
+        <span class="btn-disabled" role="button" aria-disabled="true" title="Google Playは準備中です">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.8L13.2 12 3.6 21.2c-.4-.2-.6-.6-.6-1.1V3.9c0-.5.2-.9.6-1.1zm11.2 10.3l2.5 2.5-10.8 6.3 8.3-8.8zm3.9-2.2c.6.3.9.8.9 1.4s-.3 1-.9 1.4l-2.6 1.5-2.7-2.9 2.7-2.9 2.6 1.5zM14.8 11l-8.3-8.8 10.8 6.3-2.5 2.5z"/></svg>
+          Google Play
+          <span class="coming">準備中</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <div class="footer-brand"><img src="app-icon.png" alt="">ノリログ</div>
+        <p class="footer-desc">愛車の維持費を、ひとつのアプリで。日本の車オーナーのための維持費管理アプリ。</p>
+      </div>
+      <div class="footer-col">
+        <h4>アプリ</h4>
+        <a href="#features">機能</a>
+        <a href="#download">ダウンロード</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="privacy.html">プライバシーポリシー</a>
+        <a href="terms.html">利用規約</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:norilog.app@gmail.com">お問い合わせ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 ノリログ. All rights reserved.</div>
+      <div>Made in Japan.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll state
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 20);
+window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+// Reveal on scroll
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+}, {threshold: 0.12, rootMargin: '0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+// Gallery horizontal controls
+const track = document.getElementById('gallery-track');
+const step = () => track.clientWidth * 0.6;
+document.getElementById('g-prev').onclick = () => track.scrollBy({left: -step(), behavior:'smooth'});
+document.getElementById('g-next').onclick = () => track.scrollBy({left:  step(), behavior:'smooth'});
+</script>
+
+</body>
+</html>
