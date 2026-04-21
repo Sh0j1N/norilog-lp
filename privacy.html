@@ -75,7 +75,7 @@ a:hover{text-decoration:underline}
   <header class="legal-head">
     <div class="legal-eyebrow">Privacy Policy</div>
     <h1>プライバシーポリシー</h1>
-    <div class="legal-updated">最終更新日：2025年3月21日</div>
+    <div class="legal-updated">最終更新日：2026年4月21日</div>
   </header>
 
   <h2>第１条 はじめに</h2>
@@ -87,7 +87,8 @@ a:hover{text-decoration:underline}
     <li>お客様が入力した車両情報（車種・年式・燃料種別等）</li>
     <li>維持費の記録データ（給油・保険・車検・税金・メンテナンス等）</li>
     <li>走行距離・燃費に関するデータ</li>
-    <li>アプリ内で登録した写真</li>
+    <li>アプリ内で登録した写真（車両写真、記録に添付した写真）</li>
+    <li>AIスキャン機能を利用した場合のレシート画像（Gemini API経由、詳細は第４条）</li>
     <li>サブスクリプションの購入情報（RevenueCat経由）</li>
     <li>広告配信のためのデバイス識別情報（AdMob経由）</li>
     <li>AI車種検索時の入力クエリ（Gemini API経由）</li>
@@ -107,7 +108,11 @@ a:hover{text-decoration:underline}
   <p>サブスクリプションの管理・処理のために使用します。購入情報および課金状態を処理します。</p>
 
   <h3>Google Gemini API</h3>
-  <p>AI車種検索機能のために使用します。入力した検索クエリをGoogleのサーバーに送信します。個人を特定する情報は送信しません。</p>
+  <p>以下の機能のために使用します。いずれも個人を特定する情報は送信しません。</p>
+  <ul>
+    <li><strong>AI車種検索機能：</strong>入力した検索クエリをGoogleのサーバーに送信します。</li>
+    <li><strong>AIスキャン機能（Proプラン限定）：</strong>お客様が撮影または選択したレシート画像をGoogleのサーバーに送信し、記録内容（日付・金額・カテゴリ等）の自動抽出処理を行います。送信された画像は本アプリ側では保存されず、処理完了後に破棄されます。本機能は初回利用時に画像送信に関する同意ダイアログを表示し、同意いただいた場合にのみ動作します。Proプラン未加入の場合、本機能はご利用いただけません。</li>
+  </ul>
 
   <h3>Apple CloudKit</h3>
   <p>iCloudデータ同期のために使用します。AppleのiCloudインフラを通じてデータを保存・同期します。</p>
