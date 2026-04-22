@@ -15,6 +15,8 @@
 <meta property="og:site_name" content="ノリログ">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@norilog_app">
+<meta name="twitter:creator" content="@norilog_app">
 <meta name="twitter:title" content="ノリログ — 愛車の維持費、ちゃんと知る。">
 <meta name="twitter:description" content="給油も、車検も、保険も、税金も。日本の車オーナーのための維持費管理アプリ。AIスキャンでレシートを自動入力。">
 <meta name="twitter:image" content="https://norilog.app/app-icon.png">
@@ -71,6 +73,10 @@ p{color:var(--ink-2)}
 .nav-brand img{width:28px;height:28px;border-radius:7px}
 .nav-cta{font-size:13px;font-weight:600;color:var(--ink);padding:9px 18px;border:1px solid var(--line);border-radius:100px;transition:background .2s,border-color .2s}
 .nav-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-social{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;color:var(--ink);border:1px solid var(--line);transition:background .2s,border-color .2s,color .2s}
+.nav-social svg{width:14px;height:14px}
+.nav-social:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
 /* ───────── Hero ───────── */
 .hero{padding:clamp(120px,18vw,180px) 0 clamp(60px,8vw,100px);position:relative}
@@ -286,7 +292,12 @@ p{color:var(--ink-2)}
       <span>ノリログ</span>
       <a href="releases.html" class="nav-version" aria-label="1.1.0 のリリースノートへ">1.1.0 AIスキャン</a>
     </div>
-    <a href="#download" class="nav-cta">ダウンロード</a>
+    <div class="nav-actions">
+      <a href="https://x.com/norilog_app" target="_blank" rel="noopener" class="nav-social" aria-label="公式X (Twitter) アカウント">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="#download" class="nav-cta">ダウンロード</a>
+    </div>
   </div>
 </nav>
 
@@ -615,6 +626,9 @@ p{color:var(--ink-2)}
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
+        <a href="https://x.com/norilog_app" target="_blank" rel="noopener" class="footer-social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12" style="vertical-align:-1px;margin-right:6px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@norilog_app
+        </a>
         <a href="mailto:norilog.app@gmail.com">お問い合わせ</a>
       </div>
     </div>
