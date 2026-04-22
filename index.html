@@ -89,6 +89,32 @@ p{color:var(--ink-2)}
 .plate{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;background:#fff;border:2px solid var(--ink);border-radius:6px;font-family:'Inter',monospace;font-size:13px;font-weight:700;letter-spacing:.05em;color:var(--ink);margin-bottom:32px;position:relative}
 .plate-dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
 
+/* Ambient glow decorations */
+.ambient{position:absolute;pointer-events:none;z-index:0;border-radius:50%;filter:blur(80px);opacity:.45}
+.hero .ambient-a{top:-10%;right:-5%;width:520px;height:520px;background:radial-gradient(circle,rgba(80,140,255,.22) 0%,transparent 70%)}
+.hero .ambient-b{top:40%;left:-10%;width:440px;height:440px;background:radial-gradient(circle,rgba(180,120,255,.18) 0%,transparent 70%)}
+.hero .hero-grid,.hero .container{position:relative;z-index:1}
+
+/* Version pill in nav */
+.nav-version{display:inline-flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;padding:4px 10px;margin-left:10px;color:var(--accent-ink);background:rgba(10,126,200,.08);border:1px solid rgba(10,126,200,.15);border-radius:100px;transition:background .2s}
+.nav-version::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px rgba(10,126,200,.6);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+
+/* AI Scan feature — dark ambient treatment */
+.feature-ai{background:linear-gradient(180deg,var(--paper) 0%,var(--paper) 15%,#F7F3FA 50%,var(--paper) 85%,var(--paper) 100%);position:relative;overflow:hidden;padding:clamp(100px,12vw,160px) 0}
+.feature-ai::before,.feature-ai::after{content:'';position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.feature-ai::before{top:10%;right:-8%;width:560px;height:560px;background:radial-gradient(circle,rgba(180,120,255,.28) 0%,transparent 70%)}
+.feature-ai::after{bottom:0;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(80,140,255,.22) 0%,transparent 70%)}
+.feature-ai .container{position:relative;z-index:1}
+.feature-ai .eyebrow-new{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#6B3FA0;background:linear-gradient(135deg,rgba(224,184,255,.25),rgba(180,120,255,.15));padding:6px 12px;border:1px solid rgba(180,120,255,.25);border-radius:100px;margin-bottom:24px}
+.feature-ai .eyebrow-new .dot{width:6px;height:6px;background:linear-gradient(135deg,#A855F7,#0A7EC8);border-radius:50%;box-shadow:0 0 8px rgba(168,85,247,.8)}
+.feature-ai h2{background:linear-gradient(135deg,var(--ink) 0%,#2D1F5A 50%,var(--accent-ink) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--ink)}
+.feature-ai .feature-phones{display:flex;justify-content:center;align-items:center;gap:0;position:relative}
+.feature-ai .phone-frame{width:min(220px,70%);transition:transform .6s cubic-bezier(.22,.61,.36,1)}
+.feature-ai .phone-frame:nth-child(1){transform:translateX(20%) rotate(-6deg);z-index:1}
+.feature-ai .phone-frame:nth-child(2){transform:translateX(-20%) rotate(4deg);z-index:2}
+.feature-ai .feature-list li::before{background:linear-gradient(135deg,#A855F7,#0A7EC8)}
+
 /* ───────── Features (alternating) ───────── */
 .feature{padding:clamp(80px,10vw,120px) 0}
 .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,90px);align-items:center}
@@ -103,16 +129,24 @@ p{color:var(--ink-2)}
 .feature-media .phone-frame{width:min(280px,100%)}
 
 /* ───────── Dark section (grid of details) ───────── */
-.dark{background:var(--dark);color:var(--paper)}
+.dark{background:var(--dark);color:var(--paper);position:relative;overflow:hidden}
+.dark::before{content:'';position:absolute;top:-15%;right:-10%;width:640px;height:640px;background:radial-gradient(circle,rgba(120,80,255,.18) 0%,transparent 65%);filter:blur(80px);pointer-events:none}
+.dark::after{content:'';position:absolute;bottom:-10%;left:-10%;width:560px;height:560px;background:radial-gradient(circle,rgba(0,180,255,.12) 0%,transparent 65%);filter:blur(90px);pointer-events:none}
+.dark .container{position:relative;z-index:1}
 .dark h1,.dark h2,.dark h3{color:var(--paper)}
 .dark .section-intro{max-width:640px;margin-bottom:60px}
 .dark .section-intro h2{margin-bottom:20px}
 .dark .section-intro p{font-size:16px;color:var(--dark-muted)}
 .capabilities{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dark-line);border:1px solid var(--dark-line);border-radius:16px;overflow:hidden}
-.cap{background:var(--dark);padding:32px;display:flex;flex-direction:column;gap:12px;min-height:180px}
+.cap{background:var(--dark);padding:32px;display:flex;flex-direction:column;gap:12px;min-height:190px;position:relative;transition:background .3s}
+.cap:hover{background:#0B1A30}
 .cap-icon{width:28px;height:28px;color:var(--paper);opacity:.9}
-.cap h3{font-size:15px;font-weight:600;letter-spacing:0;color:var(--paper)}
+.cap h3{font-size:15px;font-weight:600;letter-spacing:0;color:var(--paper);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .cap p{font-size:13px;color:var(--dark-muted);line-height:1.7}
+.cap.pro{background:linear-gradient(160deg,#10172E 0%,#1A1046 60%,#281555 100%)}
+.cap.pro:hover{background:linear-gradient(160deg,#131A35 0%,#1E1352 60%,#2F1A65 100%)}
+.cap.pro .cap-icon{color:#E0B8FF;opacity:1}
+.cap-pro-badge{display:inline-flex;align-items:center;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;padding:3px 8px;border-radius:20px;background:linear-gradient(135deg,#FFE066 0%,#F5B83A 100%);color:#3A1800;box-shadow:0 4px 12px rgba(245,184,58,.3)}
 
 /* ───────── Tax section (specs table feel) ───────── */
 .tax{background:var(--paper)}
@@ -124,7 +158,10 @@ p{color:var(--ink-2)}
 .spec-list .row b{font-weight:600;color:var(--ink)}
 
 /* ───────── Gallery ───────── */
-.gallery{background:var(--dark);overflow:hidden;padding:clamp(80px,10vw,120px) 0}
+.gallery{background:var(--dark);overflow:hidden;padding:clamp(80px,10vw,120px) 0;position:relative}
+.gallery::before{content:'';position:absolute;top:30%;left:50%;transform:translateX(-50%);width:900px;height:500px;background:radial-gradient(ellipse,rgba(180,120,255,.12) 0%,transparent 65%);filter:blur(90px);pointer-events:none}
+.gallery .container{position:relative;z-index:1}
+.gallery .gallery-track{position:relative;z-index:1}
 .gallery-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:50px;gap:24px;flex-wrap:wrap}
 .gallery-head h2{max-width:460px}
 .gallery-nav{display:flex;gap:8px}
@@ -137,32 +174,46 @@ p{color:var(--ink-2)}
 .gallery-item img{width:100%;height:100%;object-fit:cover;border-radius:30px}
 
 /* ───────── Pricing ───────── */
-.pricing{background:var(--paper)}
+.pricing{background:var(--paper);position:relative;overflow:hidden}
+.pricing::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:900px;height:500px;background:radial-gradient(ellipse,rgba(180,120,255,.15) 0%,transparent 70%);filter:blur(80px);pointer-events:none;z-index:0}
+.pricing .container{position:relative;z-index:1}
 .pricing-head{text-align:center;margin-bottom:60px}
 .pricing-head .eyebrow{margin-bottom:16px}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.plan{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column}
-.plan.featured{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:scale(1.02)}
-.plan-name{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
-.plan.featured .plan-name{color:var(--dark-muted)}
-.plan-badge{display:inline-block;background:var(--accent);color:#fff;font-size:10px;letter-spacing:.1em;padding:3px 8px;border-radius:20px;margin-left:8px;vertical-align:1px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+.plan{background:#fff;border:1px solid var(--line);border-radius:24px;padding:36px 28px;display:flex;flex-direction:column;position:relative;transition:transform .3s,box-shadow .3s,border-color .3s}
+.plan:hover{transform:translateY(-2px);box-shadow:0 24px 40px -20px rgba(11,18,32,.08)}
+.plan.featured{background:linear-gradient(155deg,#0F172E 0%,#1A1046 50%,#2D0B50 100%);color:var(--paper);border-color:transparent;transform:scale(1.04);box-shadow:0 40px 70px -30px rgba(120,60,200,.35),0 20px 40px -20px rgba(20,30,80,.35);overflow:hidden}
+.plan.featured::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(180,120,255,.35) 0%,transparent 60%),radial-gradient(ellipse at bottom left,rgba(80,140,255,.22) 0%,transparent 55%);pointer-events:none}
+.plan.featured::after{content:'';position:absolute;inset:1px;border-radius:23px;background:linear-gradient(155deg,rgba(255,255,255,.06) 0%,transparent 40%);pointer-events:none}
+.plan.featured>*{position:relative;z-index:1}
+.plan:hover.featured{transform:scale(1.04) translateY(-2px)}
+.plan-name{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.plan.featured .plan-name{color:rgba(230,220,255,.85)}
+.plan-badge{display:inline-flex;align-items:center;background:linear-gradient(135deg,#FFE066 0%,#F5B83A 100%);color:#3A1800;font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:20px;box-shadow:0 4px 14px rgba(245,184,58,.35)}
+.plan-badge.soft{background:rgba(10,126,200,.08);color:var(--accent-ink);border:1px solid rgba(10,126,200,.2);box-shadow:none}
 .plan-price{display:flex;align-items:baseline;gap:4px;margin-bottom:8px}
-.plan-price .num{font-family:'Inter',sans-serif;font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.plan-price .num{font-family:'Inter',sans-serif;font-size:48px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.plan.featured .plan-price .num{background:linear-gradient(135deg,#FFF 0%,#E0B8FF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .plan-price .per{font-size:14px;color:var(--muted)}
-.plan.featured .plan-price .per{color:var(--dark-muted)}
+.plan.featured .plan-price .per{color:rgba(230,220,255,.7)}
 .plan-sub{font-size:13px;color:var(--muted);margin-bottom:28px;min-height:20px}
-.plan.featured .plan-sub{color:var(--dark-muted)}
+.plan.featured .plan-sub{color:rgba(230,220,255,.7)}
 .plan-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px;flex-grow:1}
 .plan-feats li{font-size:13px;display:flex;gap:10px;align-items:flex-start;color:var(--ink-2);line-height:1.6}
-.plan.featured .plan-feats li{color:var(--dark-muted)}
+.plan-feats li b{font-weight:700;color:var(--ink)}
+.plan.featured .plan-feats li{color:rgba(230,220,255,.85)}
+.plan.featured .plan-feats li b{color:#FFF}
 .plan-feats li::before{content:'';width:14px;height:14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A7EC8' stroke-width='3'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");background-size:contain;background-repeat:no-repeat;flex-shrink:0;margin-top:4px}
-.plan-cta{display:block;text-align:center;padding:13px;border-radius:100px;font-size:13px;font-weight:600;border:1px solid var(--line);color:var(--ink);transition:background .2s,border-color .2s}
-.plan.featured .plan-cta{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.plan.featured .plan-feats li::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E0B8FF' stroke-width='3'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E")}
+.plan-cta{display:block;text-align:center;padding:13px;border-radius:100px;font-size:13px;font-weight:600;border:1px solid var(--line);color:var(--ink);transition:background .2s,border-color .2s,transform .2s}
 .plan-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.plan.featured .plan-cta:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.plan.featured .plan-cta{background:linear-gradient(135deg,#FFF 0%,#F5ECFF 100%);color:#1A0A3E;border-color:transparent;font-weight:700}
+.plan.featured .plan-cta:hover{background:linear-gradient(135deg,#E0B8FF 0%,#C8A0FF 100%);color:#1A0A3E}
 
 /* ───────── CTA ───────── */
-.cta{padding:clamp(80px,10vw,140px) 0;text-align:center;background:var(--paper)}
+.cta{padding:clamp(80px,10vw,140px) 0;text-align:center;background:var(--paper);position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(80,140,255,.14) 0%,transparent 65%);filter:blur(80px);pointer-events:none}
+.cta .container{position:relative;z-index:1}
 .cta h2{margin-bottom:20px;max-width:720px;margin-left:auto;margin-right:auto}
 .cta p{font-size:16px;max-width:520px;margin:0 auto 40px}
 
@@ -222,6 +273,7 @@ p{color:var(--ink-2)}
     <div class="nav-brand">
       <img src="app-icon.png" alt="">
       <span>ノリログ</span>
+      <a href="releases.html" class="nav-version" aria-label="1.1.0 のリリースノートへ">1.1.0 AIスキャン</a>
     </div>
     <a href="#download" class="nav-cta">ダウンロード</a>
   </div>
@@ -229,6 +281,8 @@ p{color:var(--ink-2)}
 
 <!-- ═══════════════════ HERO ═══════════════════ -->
 <section class="hero">
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
   <div class="container">
     <div class="hero-grid">
       <div class="hero-copy">
@@ -251,6 +305,31 @@ p{color:var(--ink-2)}
       <div class="hero-phone">
         <div class="phone-frame">
           <img src="screenshots/home-dark.png" alt="ノリログのホーム画面">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ AI SCAN (NEW in 1.1.0) ═══════════════════ -->
+<section class="feature feature-ai" id="ai-scan">
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-copy reveal">
+        <span class="eyebrow-new"><span class="dot"></span>New in 1.1.0</span>
+        <h2>レシートを、<br>撮るだけ。</h2>
+        <p>給油・洗車・メンテナンス・高速料金・コインパーキング。車関連のレシートを撮影すると、日付・金額・カテゴリを AI が読み取って自動で入力します。</p>
+        <ul class="feature-list">
+          <li>Google Gemini による高精度な読み取り</li>
+          <li>画像は一時的に処理のみ、端末にもサーバーにも残しません</li>
+          <li>日本のガソリンスタンドやコインパのレシートに最適化</li>
+          <li>Pro プランでご利用いただけます</li>
+        </ul>
+      </div>
+      <div class="feature-media reveal">
+        <div class="feature-phones">
+          <div class="phone-frame"><img src="screenshots/ai-scan-confirm.png" alt="レシート確認画面"></div>
+          <div class="phone-frame"><img src="screenshots/ai-scan-result.png" alt="自動入力された記録"></div>
         </div>
       </div>
     </div>
@@ -330,6 +409,21 @@ p{color:var(--ink-2)}
       <p>年式ごとに変わる税率、13年超の割増、EVの免除、軽自動車・トラック。複雑な日本の制度を、アプリが丸ごと引き受けます。</p>
     </div>
     <div class="capabilities reveal">
+      <div class="cap pro">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l3-3h12l3 3v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><circle cx="12" cy="13" r="4"/><path d="M12 13l2-2"/></svg>
+        <h3>AIスキャン<span class="cap-pro-badge">PRO</span></h3>
+        <p>レシートを撮るだけで、日付・金額・カテゴリを AI が自動入力。給油・洗車・コインパなど車関連レシートに対応。</p>
+      </div>
+      <div class="cap pro">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
+        <h3>記録に写真を添付<span class="cap-pro-badge">PRO</span></h3>
+        <p>整備の前後、洗車の仕上がり、レシート。Pro は最大5枚、無料プランでも1枚まで。愛車の履歴を写真でも残す。</p>
+      </div>
+      <div class="cap pro">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.2 16.2l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.2 7.8l2.8-2.8"/></svg>
+        <h3>AI 車種検索<span class="cap-pro-badge">PRO</span></h3>
+        <p>メーカーと車種を入れるだけで、排気量・重量・燃費の目安を自動で。シミュレーターとシームレスに連携。</p>
+      </div>
       <div class="cap">
         <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h18M5 6h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/><path d="M7 15h2"/></svg>
         <h3>自動車税を自動計算</h3>
@@ -341,19 +435,19 @@ p{color:var(--ink-2)}
         <p>初回3年・以降2年を自動算出。1ヶ月前・2週間前・前日の通知を自動で設定。</p>
       </div>
       <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg>
+        <h3>月割り計算</h3>
+        <p>保険・車検・税金を12ヶ月に分散してレポートに反映。月ごとの実質コストが見える化されます。</p>
+      </div>
+      <div class="cap">
         <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg>
         <h3>EV・PHEV に完全対応</h3>
         <p>電費 km/kWh、水素 km/kg。ガソリン車と単位を揃えて横並びで比較できます。</p>
       </div>
       <div class="cap">
-        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.2 16.2l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.2 7.8l2.8-2.8"/></svg>
-        <h3>AI 車種検索</h3>
-        <p>メーカーと車種を入れるだけで、排気量・重量・燃費の目安を自動入力。</p>
-      </div>
-      <div class="cap">
-        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        <h3>通知で、忘れない</h3>
-        <p>車検・保険更新・オイル交換・タイヤ交換・定期点検。時刻も自由に設定できます。</p>
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M2 12h4M18 12h4M12 2v4M12 18v4"/><circle cx="12" cy="12" r="3"/></svg>
+        <h3>3つの給油モード</h3>
+        <p>満タン・定額・定量。どの入れ方でも正確に記録、満タン法で燃費も自動計算されます。</p>
       </div>
       <div class="cap">
         <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
@@ -401,11 +495,13 @@ p{color:var(--ink-2)}
   </div>
   <div class="gallery-track" id="gallery-track">
     <div class="gallery-item"><img src="screenshots/home-dark.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/ai-scan-result.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/car-detail-civic.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/records.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/report-monthly.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/report-annual.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/tools.png" alt=""></div>
+    <div class="gallery-item"><img src="screenshots/ai-scan-confirm.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/car-detail-model3.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/home-light.png" alt=""></div>
     <div class="gallery-item"><img src="screenshots/features.png" alt=""></div>
@@ -427,13 +523,14 @@ p{color:var(--ink-2)}
         <ul class="plan-feats">
           <li>車両1台の記録</li>
           <li>レポート直近3ヶ月</li>
+          <li>記録に写真1枚まで添付</li>
           <li>基本の通知機能</li>
           <li>広告あり</li>
         </ul>
         <a href="#download" class="plan-cta">ダウンロード</a>
       </div>
-      <div class="plan featured reveal">
-        <div class="plan-name">Lite<span class="plan-badge">人気</span></div>
+      <div class="plan reveal">
+        <div class="plan-name">Lite<span class="plan-badge soft">人気</span></div>
         <div class="plan-price"><span class="num">¥200</span><span class="per">/ 月</span></div>
         <div class="plan-sub">¥1,600 / 年もあり。</div>
         <ul class="plan-feats">
@@ -445,15 +542,16 @@ p{color:var(--ink-2)}
         </ul>
         <a href="#download" class="plan-cta">ダウンロード</a>
       </div>
-      <div class="plan reveal">
-        <div class="plan-name">Pro</div>
+      <div class="plan featured reveal">
+        <div class="plan-name">Pro<span class="plan-badge">おすすめ</span></div>
         <div class="plan-price"><span class="num">¥300</span><span class="per">/ 月</span></div>
-        <div class="plan-sub">2週間の無料トライアル。</div>
+        <div class="plan-sub">2週間の無料トライアル付き。</div>
         <ul class="plan-feats">
+          <li><b>AIスキャン</b>でレシートを自動入力</li>
+          <li>記録に<b>写真を5枚まで</b>添付</li>
           <li>Lite のすべての機能</li>
           <li>カスタムショートカット</li>
-          <li>AI 車種検索（ツール内）</li>
-          <li>燃費・電費換算ツール</li>
+          <li>AI 車種検索・燃費/電費換算</li>
           <li>新機能への優先アクセス</li>
         </ul>
         <a href="#download" class="plan-cta">ダウンロード</a>
@@ -494,8 +592,10 @@ p{color:var(--ink-2)}
       </div>
       <div class="footer-col">
         <h4>アプリ</h4>
+        <a href="#ai-scan">AIスキャン</a>
         <a href="#features">機能</a>
         <a href="#download">ダウンロード</a>
+        <a href="releases.html">リリースノート</a>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>

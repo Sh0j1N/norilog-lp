@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>リリースノート — ノリログ</title>
+<meta name="description" content="ノリログの全アップデート履歴。機能追加・改善・不具合修正のまとめ。">
+<link rel="icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',system-ui,sans-serif;font-weight:400;color:#0B1220;background:#F4F7FB;line-height:1.9;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:#0A7EC8;text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.75}
+::selection{background:#0A7EC8;color:#F4F7FB}
+
+:root{
+  --paper:#F4F7FB;
+  --ink:#0B1220;
+  --ink-2:#2A3344;
+  --muted:#6A7280;
+  --line:rgba(11,18,32,.09);
+  --accent:#0A7EC8;
+  --accent-ink:#075E96;
+  --dark:#071220;
+  --dark-line:rgba(255,255,255,.08);
+  --dark-muted:rgba(230,238,246,.6);
+}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:50;padding:14px 0;background:rgba(244,247,251,.85);backdrop-filter:saturate(1.6) blur(20px);-webkit-backdrop-filter:saturate(1.6) blur(20px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:960px;margin:0 auto;padding:0 clamp(20px,4vw,40px);display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--ink)}
+.nav-brand img{width:28px;height:28px;border-radius:7px}
+.nav-back{font-size:13px;font-weight:500;color:var(--muted);padding:8px 14px;border:1px solid var(--line);border-radius:100px;transition:all .2s;text-decoration:none}
+.nav-back:hover{color:var(--ink);border-color:var(--ink);background:#fff;opacity:1}
+
+/* Page */
+.page{max-width:880px;margin:0 auto;padding:clamp(60px,10vw,100px) clamp(20px,4vw,40px) clamp(80px,12vw,140px);position:relative}
+.page::before{content:'';position:absolute;top:0;right:-15%;width:520px;height:520px;background:radial-gradient(circle,rgba(180,120,255,.22) 0%,transparent 70%);filter:blur(90px);pointer-events:none;z-index:0}
+.page::after{content:'';position:absolute;top:30%;left:-15%;width:440px;height:440px;background:radial-gradient(circle,rgba(80,140,255,.18) 0%,transparent 70%);filter:blur(90px);pointer-events:none;z-index:0}
+.page>*{position:relative;z-index:1}
+
+.page-head{margin-bottom:clamp(50px,8vw,80px);padding-bottom:32px;border-bottom:1px solid var(--line)}
+.page-eyebrow{font-size:11px;letter-spacing:.18em;font-weight:600;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-family:'Inter',sans-serif}
+.page h1{font-size:clamp(36px,5vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.2;color:var(--ink);margin-bottom:14px}
+.page-sub{font-size:16px;color:var(--muted);max-width:520px;line-height:1.7}
+
+/* Release block */
+.release{display:grid;grid-template-columns:180px 1fr;gap:40px;padding:clamp(40px,6vw,56px) 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.release:last-child{border-bottom:none}
+.release-meta{position:sticky;top:100px}
+.release-version{font-family:'Inter',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1;margin-bottom:8px;display:flex;align-items:baseline;gap:10px}
+.release-version .chip{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:linear-gradient(135deg,#FFE066,#F5B83A);color:#3A1800;box-shadow:0 4px 14px rgba(245,184,58,.35);vertical-align:3px}
+.release-date{font-size:13px;color:var(--muted);font-family:'Inter',sans-serif;letter-spacing:.02em}
+.release-title{font-size:clamp(22px,2.5vw,28px);font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em;line-height:1.35}
+.release-lead{font-size:15px;color:var(--ink-2);margin-bottom:32px;line-height:1.8}
+
+.change-group{margin-bottom:28px}
+.change-group:last-child{margin-bottom:0}
+.change-label{display:inline-flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:14px}
+.change-label.added{background:rgba(10,126,200,.1);color:var(--accent-ink);border:1px solid rgba(10,126,200,.2)}
+.change-label.fixed{background:rgba(120,80,255,.1);color:#5B3DB8;border:1px solid rgba(120,80,255,.2)}
+.change-label.changed{background:rgba(100,116,139,.1);color:#475569;border:1px solid rgba(100,116,139,.2)}
+.change-group ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.change-group li{font-size:14px;color:var(--ink-2);line-height:1.8;padding-left:18px;position:relative}
+.change-group li::before{content:'';position:absolute;left:0;top:14px;width:6px;height:1px;background:var(--muted)}
+.change-group li b{color:var(--ink);font-weight:600}
+
+/* Highlight card (for flagship feature) */
+.highlight{background:linear-gradient(155deg,#0F172E 0%,#1A1046 60%,#2D0B50 100%);color:#F5F7FA;border-radius:20px;padding:clamp(24px,3.5vw,32px);margin-bottom:32px;position:relative;overflow:hidden}
+.highlight::before{content:'';position:absolute;top:-30%;right:-20%;width:400px;height:400px;background:radial-gradient(circle,rgba(180,120,255,.35) 0%,transparent 65%);filter:blur(60px);pointer-events:none}
+.highlight::after{content:'';position:absolute;bottom:-20%;left:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(80,140,255,.25) 0%,transparent 65%);filter:blur(60px);pointer-events:none}
+.highlight-eyebrow{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#E0B8FF;margin-bottom:12px;position:relative;display:inline-flex;align-items:center;gap:8px}
+.highlight-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,#E0B8FF,#0A7EC8);box-shadow:0 0 10px rgba(224,184,255,.8)}
+.highlight h3{font-size:clamp(20px,2.4vw,26px);font-weight:700;letter-spacing:-.02em;line-height:1.35;margin-bottom:10px;color:#FFF;position:relative;background:linear-gradient(135deg,#FFF 0%,#E0B8FF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.highlight p{font-size:14px;color:rgba(230,220,255,.78);line-height:1.8;position:relative}
+
+/* Footer */
+.footer{background:var(--dark);color:var(--dark-muted);padding:40px 0;font-size:13px;text-align:center}
+.footer a{color:var(--dark-muted);margin:0 12px}
+.footer a:hover{color:#fff;opacity:1}
+
+/* Responsive */
+@media (max-width:720px){
+  .release{grid-template-columns:1fr;gap:12px}
+  .release-meta{position:static;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .release-version{font-size:26px;margin-bottom:0}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand" style="text-decoration:none"><img src="app-icon.png" alt="">ノリログ</a>
+    <a href="index.html" class="nav-back">← トップに戻る</a>
+  </div>
+</nav>
+
+<main class="page">
+  <header class="page-head">
+    <div class="page-eyebrow">Release Notes</div>
+    <h1>アップデート履歴</h1>
+    <p class="page-sub">新機能・改善・不具合修正のすべてをここに。ノリログは日々、車オーナーの声を聞きながら進化しています。</p>
+  </header>
+
+  <!-- ═══════════════════ 1.1.0 ═══════════════════ -->
+  <section class="release">
+    <div class="release-meta">
+      <div class="release-version">1.1.0<span class="chip">Latest</span></div>
+      <div class="release-date">2026年4月リリース</div>
+    </div>
+    <div class="release-content">
+      <h2 class="release-title">AIスキャンと、写真でたどる愛車の履歴。</h2>
+      <p class="release-lead">3週間のフィードバックを全部反映したメジャーアップデート。目玉は「AIスキャン」機能と、記録への写真添付。不具合もまとめて修正しました。</p>
+
+      <div class="highlight">
+        <div class="highlight-eyebrow">Flagship Feature</div>
+        <h3>AIスキャン — レシートを、撮るだけ。</h3>
+        <p>給油・洗車・メンテナンス・高速料金・コインパーキング。車関連のレシートを撮影すると、日付・金額・カテゴリを AI が読み取って自動入力します。小数点入力や長いレシート番地の打ち込み作業から解放。Pro プランでご利用いただけます。</p>
+      </div>
+
+      <div class="change-group">
+        <div class="change-label added">Added</div>
+        <ul>
+          <li><b>AIスキャン機能</b>（Pro）— Google Gemini による高精度な読み取り。初回利用時に画像送信の同意ダイアログを表示</li>
+          <li><b>記録への写真添付</b>— Basic/Lite は1枚、Pro は5枚まで</li>
+          <li>メモ欄が複数行対応、独立セクションとして使いやすく</li>
+          <li>記録の編集画面からカテゴリを変更できるように</li>
+          <li>洗車タイプに「コーティング」を追加</li>
+          <li>記録数に応じた評価のお願い機能（10件・30件・60件）</li>
+        </ul>
+      </div>
+
+      <div class="change-group">
+        <div class="change-label fixed">Fixed</div>
+        <ul>
+          <li>将来の日付で登録した記録が一覧に表示されない不具合</li>
+          <li>カスタムカテゴリ記録時にメモが消える不具合</li>
+          <li>累計走行距離が「今月の走行距離」として表示される不具合</li>
+          <li>ローン・駐車場の自動記録がレポート画面に反映されない不具合</li>
+          <li>写真枠の位置調整が初回のみリセットされる不具合</li>
+        </ul>
+      </div>
+
+      <div class="change-group">
+        <div class="change-label changed">Changed</div>
+        <ul>
+          <li>給油量・充電量・水素量を小数第2位まで対応。レシート表記との1円ずれも解消されました</li>
+          <li>カスタムカテゴリ記録でタイトルとメモを別フィールドに保存(旧データも自動で読み込み)</li>
+          <li>記録追加画面に ambient color 背景を適用、他画面と統一</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 1.0.x ═══════════════════ -->
+  <section class="release">
+    <div class="release-meta">
+      <div class="release-version">1.0.0</div>
+      <div class="release-date">2026年3月31日</div>
+    </div>
+    <div class="release-content">
+      <h2 class="release-title">ノリログ、はじめてのリリース。</h2>
+      <p class="release-lead">日本の車オーナーのための維持費管理アプリ、ノリログの初回リリース。給油・車検・税金・保険・メンテナンス…すべてをひとつに記録できます。</p>
+
+      <div class="change-group">
+        <div class="change-label added">Initial Release</div>
+        <ul>
+          <li>10以上のカテゴリで維持費を記録(給油・洗車・車検・保険・税金・メンテナンス・高速料金・駐車場・ローン・カスタム費用など)</li>
+          <li>月別・年別・カテゴリ別のレポート機能</li>
+          <li>維持費シミュレーター・比較ツール</li>
+          <li>AI 車種検索(Gemini による排気量・重量の自動入力)</li>
+          <li>自動車税の自動計算(2019年10月税制改正・13年超割増・EV免除すべて対応)</li>
+          <li>車検スケジューラーと通知リマインダー</li>
+          <li>iCloud 同期(CloudKit)</li>
+          <li>EV・PHEV・FCV に完全対応(電費・水素燃費の単位統一)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <p style="text-align:center;margin-top:60px;font-size:13px;color:var(--muted)">これからも車オーナーのみなさんの声を聞きながら、ノリログを進化させていきます。</p>
+</main>
+
+<footer class="footer">
+  <div>
+    <a href="index.html">トップ</a>・
+    <a href="releases.html">リリースノート</a>・
+    <a href="privacy.html">プライバシーポリシー</a>・
+    <a href="terms.html">利用規約</a>
+  </div>
+  <div style="margin-top:12px;font-size:12px;opacity:.7">© 2026 ノリログ. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
