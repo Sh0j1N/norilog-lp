@@ -100,43 +100,20 @@ p{color:var(--ink-2)}
 .dark .btn-disabled .coming{background:rgba(255,255,255,.08);color:var(--dark-muted)}
 
 .hero-phone{position:relative;padding:20px;display:flex;justify-content:center}
-/* ── Premium iPhone frame (titanium-ish) ── */
+/* ── Image-baked iPhone mockup (frame pre-rendered) ── */
 .phone-frame{
   position:relative;
   width:min(320px,100%);
-  aspect-ratio:1125/2436;
-  border-radius:44px;
-  padding:4px;
-  background:
-    linear-gradient(145deg,#3A3F47 0%,#1C1F24 30%,#0B0D10 55%,#1C1F24 75%,#3A3F47 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.08),
-    inset 0 0 0 2px rgba(0,0,0,.4),
-    0 1px 0 0 rgba(255,255,255,.05),
-    0 24px 50px -18px rgba(14,14,18,.35),
-    0 12px 24px -8px rgba(14,14,18,.22);
-}
-/* Dynamic Island */
-.phone-frame::before{
-  content:'';
-  position:absolute;top:12px;left:50%;transform:translateX(-50%);
-  width:33%;max-width:120px;aspect-ratio:120/34;
-  background:radial-gradient(ellipse at 70% 50%,#1a1a1d 0%,#000 60%);
-  border-radius:100px;
-  box-shadow:inset 0 1px 2px rgba(255,255,255,.04);
-  z-index:3;
-}
-/* Side buttons (right) - subtle titanium accents */
-.phone-frame::after{
-  content:'';
-  position:absolute;top:22%;right:-2px;width:3px;height:9%;
-  background:linear-gradient(90deg,#2A2E34,#454A52);
-  border-radius:2px;z-index:0;
+  display:flex;
+  justify-content:center;
+  filter:drop-shadow(0 24px 50px rgba(14,14,18,.3)) drop-shadow(0 12px 24px rgba(14,14,18,.18));
 }
 .phone-frame img{
-  width:100%;height:100%;object-fit:cover;
-  border-radius:40px;display:block;
-  position:relative;z-index:1;
+  width:100%;height:auto;display:block;
+}
+/* Hero variant: angled 3D mockup (wider aspect) */
+.phone-frame.is-hero{
+  width:min(380px,100%);
 }
 
 /* License plate accent */
@@ -224,8 +201,8 @@ p{color:var(--ink-2)}
 .gallery-nav svg{width:18px;height:18px}
 .gallery-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 clamp(20px,4vw,40px) 20px}
 .gallery-track::-webkit-scrollbar{display:none}
-.gallery-item{flex:0 0 auto;width:min(260px,70vw);scroll-snap-align:start;aspect-ratio:1125/2436;border-radius:36px;padding:6px;background:linear-gradient(135deg,#2A2A30,#0E0E12);box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
-.gallery-item img{width:100%;height:100%;object-fit:cover;border-radius:30px}
+.gallery-item{flex:0 0 auto;width:min(260px,70vw);scroll-snap-align:start;filter:drop-shadow(0 30px 60px rgba(0,0,0,.45))}
+.gallery-item img{width:100%;height:auto;display:block}
 
 /* ───────── Pricing ───────── */
 .pricing{background:var(--paper);position:relative;overflow:hidden}
@@ -369,8 +346,8 @@ p{color:var(--ink-2)}
         </div>
       </div>
       <div class="hero-phone">
-        <div class="phone-frame">
-          <img src="screenshots/home-dark.png" alt="ノリログのホーム画面">
+        <div class="phone-frame is-hero">
+          <img src="screenshots/home-dark-hero.png" alt="ノリログのホーム画面">
         </div>
       </div>
     </div>
