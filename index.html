@@ -72,7 +72,8 @@ p{color:var(--ink-2)}
 .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-.01em;white-space:nowrap;min-width:0;flex-wrap:nowrap}
 .nav-brand>span{white-space:nowrap}
 .nav-brand img{width:28px;height:28px;border-radius:7px;flex-shrink:0}
-.nav-cta{font-size:13px;font-weight:600;color:var(--ink);padding:9px 18px;border:1px solid var(--line);border-radius:100px;white-space:nowrap;flex-shrink:0;transition:background .2s,border-color .2s}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink);padding:9px 18px;border:1px solid var(--line);border-radius:100px;white-space:nowrap;flex-shrink:0;transition:background .2s,border-color .2s}
+.nav-cta svg{width:14px;height:14px;flex-shrink:0}
 .nav-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .nav-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .nav-social{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;color:var(--ink);border:1px solid var(--line);flex-shrink:0;transition:background .2s,border-color .2s,color .2s}
@@ -127,10 +128,10 @@ p{color:var(--ink-2)}
 .feature-ai .eyebrow-new{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#6B3FA0;background:linear-gradient(135deg,rgba(224,184,255,.25),rgba(180,120,255,.15));padding:6px 12px;border:1px solid rgba(180,120,255,.25);border-radius:100px;margin-bottom:24px}
 .feature-ai .eyebrow-new .dot{width:6px;height:6px;background:linear-gradient(135deg,#A855F7,#0A7EC8);border-radius:50%;box-shadow:0 0 8px rgba(168,85,247,.8)}
 .feature-ai h2{background:linear-gradient(135deg,var(--ink) 0%,#2D1F5A 50%,var(--accent-ink) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--ink)}
-.feature-ai .feature-phones{display:flex;justify-content:center;align-items:center;gap:0;position:relative}
-.feature-ai .phone-frame{width:min(220px,70%);transition:transform .6s cubic-bezier(.22,.61,.36,1)}
-.feature-ai .phone-frame:nth-child(1){transform:translateX(20%) rotate(-6deg);z-index:1}
-.feature-ai .phone-frame:nth-child(2){transform:translateX(-20%) rotate(4deg);z-index:2}
+.feature-ai .feature-phones{display:flex;justify-content:center;align-items:center;gap:0;position:relative;max-width:100%;overflow:hidden;padding:20px 0}
+.feature-ai .phone-frame{width:min(220px,45%);flex-shrink:0;transition:transform .6s cubic-bezier(.22,.61,.36,1)}
+.feature-ai .phone-frame:nth-child(1){transform:translateX(12%) rotate(-6deg);z-index:1}
+.feature-ai .phone-frame:nth-child(2){transform:translateX(-12%) rotate(4deg);z-index:2}
 .feature-ai .feature-list li::before{background:linear-gradient(135deg,#A855F7,#0A7EC8)}
 
 /* ───────── Features (alternating) ───────── */
@@ -253,7 +254,9 @@ p{color:var(--ink-2)}
 /* ───────── Responsive ───────── */
 @media (max-width:860px){
   .nav-version{display:none}
-  .nav-cta{padding:8px 14px;font-size:12px}
+  .nav-cta{padding:8px;width:36px;height:36px;justify-content:center;gap:0}
+  .nav-cta svg{width:16px;height:16px}
+  .nav-cta-label{display:none}
   .hero{padding:clamp(100px,20vw,140px) 0 clamp(40px,8vw,60px)}
   .hero-grid{grid-template-columns:1fr;gap:36px}
   .hero-phone{order:2;padding:0}
@@ -299,7 +302,7 @@ p{color:var(--ink-2)}
       <a href="https://x.com/norilog_app" target="_blank" rel="noopener" class="nav-social" aria-label="公式X (Twitter) アカウント">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
       </a>
-      <a href="#download" class="nav-cta">ダウンロード</a>
+      <a href="#download" class="nav-cta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg><span class="nav-cta-label">ダウンロード</span></a>
     </div>
   </div>
 </nav>
