@@ -28,8 +28,8 @@
 <style>
 /* ───────── Reset ───────── */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{font-family:'Noto Sans JP',system-ui,sans-serif;font-weight:400;color:#0B1220;background:#F4F7FB;line-height:1.8;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;overflow-x:clip}
+body{font-family:'Noto Sans JP',system-ui,sans-serif;font-weight:400;color:#0B1220;background:#F4F7FB;line-height:1.8;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip;word-break:auto-phrase;line-break:strict;overflow-wrap:break-word}
 img{max-width:100%;display:block}
 a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer;border:none;background:none}
@@ -81,7 +81,7 @@ p{color:var(--ink-2)}
 .nav-social:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
 /* ───────── Hero ───────── */
-.hero{padding:clamp(120px,18vw,180px) 0 clamp(60px,8vw,100px);position:relative}
+.hero{padding:clamp(120px,18vw,180px) 0 clamp(60px,8vw,100px);position:relative;overflow:hidden}
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(40px,6vw,80px);align-items:center}
 .hero-copy .eyebrow{margin-bottom:28px}
 .hero h1{margin-bottom:28px}
@@ -100,9 +100,44 @@ p{color:var(--ink-2)}
 .dark .btn-disabled .coming{background:rgba(255,255,255,.08);color:var(--dark-muted)}
 
 .hero-phone{position:relative;padding:20px;display:flex;justify-content:center}
-.phone-frame{position:relative;width:min(320px,100%);aspect-ratio:1125/2436;border-radius:48px;padding:8px;background:linear-gradient(135deg,#2A2A30,#0E0E12);box-shadow:0 2px 4px rgba(14,14,18,.05),0 30px 60px -20px rgba(14,14,18,.25),0 15px 30px -10px rgba(14,14,18,.2)}
-.phone-frame::before{content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);width:110px;height:30px;background:#000;border-radius:100px;z-index:2}
-.phone-frame img{width:100%;height:100%;object-fit:cover;border-radius:42px;display:block}
+/* ── Premium iPhone frame (titanium-ish) ── */
+.phone-frame{
+  position:relative;
+  width:min(320px,100%);
+  aspect-ratio:1125/2436;
+  border-radius:44px;
+  padding:4px;
+  background:
+    linear-gradient(145deg,#3A3F47 0%,#1C1F24 30%,#0B0D10 55%,#1C1F24 75%,#3A3F47 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    inset 0 0 0 2px rgba(0,0,0,.4),
+    0 1px 0 0 rgba(255,255,255,.05),
+    0 24px 50px -18px rgba(14,14,18,.35),
+    0 12px 24px -8px rgba(14,14,18,.22);
+}
+/* Dynamic Island */
+.phone-frame::before{
+  content:'';
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:33%;max-width:120px;aspect-ratio:120/34;
+  background:radial-gradient(ellipse at 70% 50%,#1a1a1d 0%,#000 60%);
+  border-radius:100px;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.04);
+  z-index:3;
+}
+/* Side buttons (right) - subtle titanium accents */
+.phone-frame::after{
+  content:'';
+  position:absolute;top:22%;right:-2px;width:3px;height:9%;
+  background:linear-gradient(90deg,#2A2E34,#454A52);
+  border-radius:2px;z-index:0;
+}
+.phone-frame img{
+  width:100%;height:100%;object-fit:cover;
+  border-radius:40px;display:block;
+  position:relative;z-index:1;
+}
 
 /* License plate accent */
 .plate{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;background:#fff;border:2px solid var(--ink);border-radius:6px;font-family:'Inter',monospace;font-size:13px;font-weight:700;letter-spacing:.05em;color:var(--ink);margin-bottom:32px;position:relative}
@@ -665,6 +700,21 @@ const track = document.getElementById('gallery-track');
 const step = () => track.clientWidth * 0.6;
 document.getElementById('g-prev').onclick = () => track.scrollBy({left: -step(), behavior:'smooth'});
 document.getElementById('g-next').onclick = () => track.scrollBy({left:  step(), behavior:'smooth'});
+</script>
+
+<!-- BudouX: Japanese phrase-level line-break optimization -->
+<script src="https://cdn.jsdelivr.net/npm/budoux@0.6.5/bundle/budoux-ja.min.js"></script>
+<script>
+(() => {
+  if (typeof budoux === 'undefined') return;
+  const parser = budoux.loadDefaultJapaneseParser();
+  // Target headings, leads, feature copy — not nav/buttons
+  const selectors = ['h1','h2','h3','.hero-lead','.feature p','.feature-list li','.cap p','.plan-features li','.tax-card p','.page-sub','.release-lead','.release-title'];
+  document.querySelectorAll(selectors.join(',')).forEach((el) => {
+    if (el.querySelector('img,svg')) return;
+    try { parser.applyToElement(el); } catch (e) { /* skip */ }
+  });
+})();
 </script>
 
 </body>

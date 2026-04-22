@@ -24,7 +24,8 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{font-family:'Noto Sans JP',system-ui,sans-serif;font-weight:400;color:#0B1220;background:#F4F7FB;line-height:1.9;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;overflow-x:clip}
+body{font-family:'Noto Sans JP',system-ui,sans-serif;font-weight:400;color:#0B1220;background:#F4F7FB;line-height:1.9;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip;word-break:auto-phrase;line-break:strict;overflow-wrap:break-word}
 img{max-width:100%;display:block}
 a{color:#0A7EC8;text-decoration:none;transition:opacity .2s}
 a:hover{opacity:.75}
@@ -210,5 +211,17 @@ a:hover{opacity:.75}
   <div style="margin-top:12px;font-size:12px;opacity:.7">© 2026 ノリログ. All rights reserved.</div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/budoux@0.6.5/bundle/budoux-ja.min.js"></script>
+<script>
+(() => {
+  if (typeof budoux === 'undefined') return;
+  const parser = budoux.loadDefaultJapaneseParser();
+  const selectors = ['h1','h2','h3','.page-sub','.release-lead','.release-title','.change-group li','.highlight p'];
+  document.querySelectorAll(selectors.join(',')).forEach((el) => {
+    if (el.querySelector('img,svg')) return;
+    try { parser.applyToElement(el); } catch (e) {}
+  });
+})();
+</script>
 </body>
 </html>
