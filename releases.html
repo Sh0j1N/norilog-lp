@@ -211,17 +211,14 @@ a:hover{opacity:.75}
   <div style="margin-top:12px;font-size:12px;opacity:.7">© 2026 ノリログ. All rights reserved.</div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/budoux@0.6.5/bundle/budoux-ja.min.js"></script>
-<script>
-(() => {
-  if (typeof budoux === 'undefined') return;
-  const parser = budoux.loadDefaultJapaneseParser();
-  const selectors = ['h1','h2','h3','.page-sub','.release-lead','.release-title','.change-group li','.highlight p'];
-  document.querySelectorAll(selectors.join(',')).forEach((el) => {
-    if (el.querySelector('img,svg')) return;
-    try { parser.applyToElement(el); } catch (e) {}
-  });
-})();
+<script type="module">
+import { loadDefaultJapaneseParser } from 'https://cdn.jsdelivr.net/npm/budoux@0.8.1/+esm';
+const parser = loadDefaultJapaneseParser();
+const selectors = ['h1','h2','h3','.page-sub','.release-lead','.release-title','.change-group li','.highlight p'];
+document.querySelectorAll(selectors.join(',')).forEach((el) => {
+  if (el.querySelector('img,svg')) return;
+  try { parser.applyToElement(el); } catch (e) {}
+});
 </script>
 </body>
 </html>

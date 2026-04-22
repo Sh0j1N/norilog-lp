@@ -703,18 +703,14 @@ document.getElementById('g-next').onclick = () => track.scrollBy({left:  step(),
 </script>
 
 <!-- BudouX: Japanese phrase-level line-break optimization -->
-<script src="https://cdn.jsdelivr.net/npm/budoux@0.6.5/bundle/budoux-ja.min.js"></script>
-<script>
-(() => {
-  if (typeof budoux === 'undefined') return;
-  const parser = budoux.loadDefaultJapaneseParser();
-  // Target headings, leads, feature copy — not nav/buttons
-  const selectors = ['h1','h2','h3','.hero-lead','.feature p','.feature-list li','.cap p','.plan-features li','.tax-card p','.page-sub','.release-lead','.release-title'];
-  document.querySelectorAll(selectors.join(',')).forEach((el) => {
-    if (el.querySelector('img,svg')) return;
-    try { parser.applyToElement(el); } catch (e) { /* skip */ }
-  });
-})();
+<script type="module">
+import { loadDefaultJapaneseParser } from 'https://cdn.jsdelivr.net/npm/budoux@0.8.1/+esm';
+const parser = loadDefaultJapaneseParser();
+const selectors = ['h1','h2','h3','.hero-lead','.feature p','.feature-list li','.cap p','.plan-features li','.tax-card p','.page-sub','.release-lead','.release-title'];
+document.querySelectorAll(selectors.join(',')).forEach((el) => {
+  if (el.querySelector('img,svg')) return;
+  try { parser.applyToElement(el); } catch (e) {}
+});
 </script>
 
 </body>
