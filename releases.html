@@ -122,10 +122,34 @@ a:hover{opacity:.75}
     <p class="page-sub">新機能・改善・不具合修正のすべてをここに。ノリログは日々、車オーナーの声を聞きながら進化しています。</p>
   </header>
 
+  <!-- ═══════════════════ 1.1.1 ═══════════════════ -->
+  <section class="release">
+    <div class="release-meta">
+      <div class="release-version">1.1.1<span class="chip">Latest</span></div>
+      <div class="release-date">2026年4月リリース</div>
+    </div>
+    <div class="release-content">
+      <h2 class="release-title">集計の正しさを、もっと精密に。</h2>
+      <p class="release-lead">1.1.0 リリース直後に報告された集計バグを緊急修正。将来日付の記録（メンテ予定・カスタム費用予定など）が「今月の合計」「累計」「最新走行距離」などに混入していた問題を、関連する集計ロジック全箇所で一括修正しました。</p>
+
+      <div class="change-group">
+        <div class="change-label fixed">Fixed</div>
+        <ul>
+          <li><b>将来月の記録が「今月の合計」に混入する不具合</b>（車両詳細画面・楽しい統計画面）</li>
+          <li><b>将来月の記録が「累計」に混入する不具合</b>（楽しい統計の累計コスト・累計エネルギー量）</li>
+          <li><b>将来月の記録が「今年の合計」に混入する不具合</b>（ホーム画面）</li>
+          <li><b>未来日付の走行距離が「最新走行距離」「累計走行距離」に反映される不具合</b></li>
+          <li>未来日付の給油記録が平均燃費・燃費画面の計算に含まれる不具合</li>
+          <li>当該月の記録が記録された月になるまで、各種集計に正しく加算されないよう統一</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════════ 1.1.0 ═══════════════════ -->
   <section class="release">
     <div class="release-meta">
-      <div class="release-version">1.1.0<span class="chip">Latest</span></div>
+      <div class="release-version">1.1.0</div>
       <div class="release-date">2026年4月リリース</div>
     </div>
     <div class="release-content">
