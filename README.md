@@ -22,6 +22,6 @@ python3 -m http.server 8080
 Cloudflare Pages にデプロイ（`main` ブランチから自動デプロイ）。
 
 - Production: https://norilog.app
-- Contact: norilog.app@gmail.com
+- Contact: support@norilog.app
 
 © 2026 ノリログ. All rights reserved.
