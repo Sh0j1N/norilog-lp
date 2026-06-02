@@ -61,8 +61,17 @@ a:hover{opacity:.75}
 .page h1{font-size:clamp(30px,4.8vw,44px);font-weight:800;letter-spacing:-.03em;line-height:1.25;color:var(--ink);margin-bottom:12px}
 .page-sub{font-size:15px;color:var(--muted);max-width:520px;line-height:1.75}
 
+/* Vehicle-type toggle */
+.vtype{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px;margin-bottom:18px;box-shadow:0 2px 4px rgba(14,14,18,.02)}
+.vtype-opt{position:relative;cursor:pointer}
+.vtype-opt input{position:absolute;opacity:0;pointer-events:none}
+.vtype-opt span{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border-radius:10px;font-size:15px;font-weight:600;color:var(--muted);transition:background .2s,color .2s}
+.vtype-opt input:checked+span{background:var(--ink);color:var(--paper)}
+.vtype-opt input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+
 /* Form */
 .form{background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(24px,4vw,36px);margin-bottom:28px;box-shadow:0 2px 4px rgba(14,14,18,.02),0 24px 50px -20px rgba(14,14,18,.08)}
+.moto-hint{font-size:12px;color:var(--muted);line-height:1.7;margin-top:4px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
 .form-row:last-child{margin-bottom:0}
 .field{display:flex;flex-direction:column;gap:8px}
@@ -129,7 +138,19 @@ a:hover{opacity:.75}
     <p class="page-sub">車両区分と初度登録年から、自動車税・重量税・自賠責保険を自動計算します。2019年10月の税制改正、13年超・18年超の重課にも対応。</p>
   </header>
 
+  <div class="vtype" role="tablist" aria-label="車種">
+    <label class="vtype-opt">
+      <input type="radio" name="vehicleType" value="car" checked>
+      <span>🚗 自動車</span>
+    </label>
+    <label class="vtype-opt">
+      <input type="radio" name="vehicleType" value="motorcycle">
+      <span>🏍 バイク</span>
+    </label>
+  </div>
+
   <form class="form" id="tax-form">
+   <div id="car-fields">
     <div class="form-row">
       <div class="field full">
         <label for="category">車両区分</label>
@@ -199,6 +220,32 @@ a:hover{opacity:.75}
         <input type="number" id="weight" value="1200" min="1" max="10000" step="50">
       </div>
     </div>
+   </div><!-- /#car-fields -->
+
+   <div id="moto-fields" style="display:none">
+    <div class="form-row">
+      <div class="field">
+        <label for="m-displacement">総排気量 <span class="hint">cc</span></label>
+        <input type="number" id="m-displacement" value="250" min="1" max="2500" step="1">
+      </div>
+      <div class="field">
+        <label for="m-registrationYear">初度登録年</label>
+        <input type="number" id="m-registrationYear" value="2022" min="1970" max="2030" step="1">
+      </div>
+    </div>
+
+    <div class="form-row" id="m-row-newStandard" style="display:none">
+      <div class="field full">
+        <label style="cursor:pointer">
+          <input type="checkbox" id="m-newStandardMoped" style="width:auto;margin-right:8px;vertical-align:middle">
+          新基準原付（最高出力 4.0kW 以下）
+        </label>
+        <span class="hint" style="margin-left:0;display:block;font-weight:400">2025年11月以降の新区分。50cc超〜125cc以下でも、最高出力4.0kW以下なら原付一種扱い（2,000円）。</span>
+      </div>
+    </div>
+
+    <p class="moto-hint">排気量から二輪車区分を自動判定します。原付・軽二輪（〜250cc）は車検がないため重量税はかかりません。小型二輪（251cc〜）のみ重量税が発生します。</p>
+   </div><!-- /#moto-fields -->
   </form>
 
   <section class="result" id="result" aria-live="polite">
@@ -217,6 +264,22 @@ a:hover{opacity:.75}
       <li>
         <div><span class="label">自賠責保険（年換算）</span><span class="note">車検時に24ヶ月分を一括支払い</span></div>
         <span class="amount" id="r-compulsory">¥0</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="result" id="result-moto" aria-live="polite" style="display:none">
+    <div class="result-eyebrow">年間 試算結果</div>
+    <div class="result-total" id="mr-total">¥0</div>
+    <div class="result-unit">年間合計（目安）</div>
+    <ul class="result-list">
+      <li>
+        <div><span class="label">軽自動車税（種別割・年額）</span><span class="note" id="mr-tax-note"></span></div>
+        <span class="amount" id="mr-tax">¥0</span>
+      </li>
+      <li id="mr-weight-row" style="display:none">
+        <div><span class="label">重量税（年換算）</span><span class="note" id="mr-weighttax-note">車検時に2年分を一括支払い</span></div>
+        <span class="amount" id="mr-weighttax">¥0</span>
       </li>
     </ul>
   </section>

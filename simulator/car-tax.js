@@ -65,6 +65,19 @@ const TaxConstants = {
 
   compulsoryInsurance24Months:    17650,
   keiCompulsoryInsurance24Months: 17540,
+
+  // バイク（二輪車）軽自動車税（種別割）年額
+  // アプリ TaxConstants.motorcycleTax* と同一値
+  motorcycleTaxMoped:     2000,  // 原付一種（〜50cc）／原付二種乙（51〜90cc）／新基準原付
+  motorcycleTaxMopedHigh: 2400,  // 原付二種甲（91〜125cc）
+  motorcycleTaxLight:     3600,  // 軽二輪（126〜250cc）
+  motorcycleTaxSmall:     6000,  // 小型二輪（251cc〜）
+
+  // バイク重量税（小型二輪のみ・2年分）。アプリ TaxConstants.motorcycleWeightTax* と同一値
+  motorcycleWeightTax:        3800,  // 13年未満
+  motorcycleWeightTax13Year:  4600,  // 13年以上18年未満（監査2026-06-03で確定）
+  motorcycleWeightTax18Year:  5000,  // 18年以上
+  motorcycleWeightTaxNew3Year: 5700, // 新車登録時のみ（3年分）
 };
 
 /* ── Fuel Type 判定 ── */
@@ -153,6 +166,61 @@ const compulsoryInsurance24Months = (category) =>
     : TaxConstants.compulsoryInsurance24Months;
 
 /* ══════════════════════════════════════════════
+   バイク（二輪車）
+   アプリ TaxCalculator.motorcycleTax / motorcycleWeightTax と同一の区分判定。
+   排気量から二輪車区分（NumberPlateCategory）を導出する。
+   ══════════════════════════════════════════════ */
+
+/* ── 排気量 → 二輪車区分 ──
+   アプリ NumberPlateCategory の cc 範囲に対応。
+     〜50cc       → mopedClass1   原付一種
+     51〜125cc    → mopedClass2   原付二種（90cc 境界で税額が分かれる）
+     126〜250cc   → lightMotorcycle 軽二輪
+     251cc〜      → smallMotorcycle 小型二輪 */
+function motorcycleSubCategory(displacement) {
+  if (displacement <= 50)  return 'mopedClass1';
+  if (displacement <= 125) return 'mopedClass2';
+  if (displacement <= 250) return 'lightMotorcycle';
+  return 'smallMotorcycle';
+}
+
+/* ── 二輪車 軽自動車税（種別割）年額 ──
+   アプリ TaxCalculator.motorcycleTax と同一ロジック。
+   原付二種は 51〜90cc が 2,000 円、91〜125cc が 2,400 円。
+   新基準原付（50cc超125cc以下＋最高出力4.0kW以下）は原付二種ナンバーでも
+   原付一種扱い（2,000円）になるため isNewStandardMoped で補正する。 */
+function motorcycleTax({ subCategory, displacement, isNewStandardMoped }) {
+  switch (subCategory) {
+    case 'mopedClass1':
+      return TaxConstants.motorcycleTaxMoped;
+    case 'mopedClass2':
+      if (isNewStandardMoped) return TaxConstants.motorcycleTaxMoped;
+      return displacement <= 90 ? TaxConstants.motorcycleTaxMoped : TaxConstants.motorcycleTaxMopedHigh;
+    case 'lightMotorcycle':
+      return TaxConstants.motorcycleTaxLight;
+    case 'smallMotorcycle':
+      return TaxConstants.motorcycleTaxSmall;
+    default:
+      return 0;
+  }
+}
+
+/* ── 二輪車 重量税（車検時 = 2年分）──
+   小型二輪（251cc〜）のみ課税。軽二輪・原付は車検がないため重量税なし。
+   アプリ TaxCalculator.motorcycleWeightTax と同一ロジック。 */
+function motorcycleWeightTax({ subCategory, carAge, isFirstRegistration }) {
+  if (subCategory !== 'smallMotorcycle') return 0;
+  if (isFirstRegistration) return TaxConstants.motorcycleWeightTaxNew3Year;
+  if (carAge >= 18) return TaxConstants.motorcycleWeightTax18Year;
+  if (carAge >= 13) return TaxConstants.motorcycleWeightTax13Year;
+  return TaxConstants.motorcycleWeightTax;
+}
+
+/* ── 新基準原付トグルの有効条件（51〜125cc のみ意味を持つ）── */
+const isNewStandardMopedEligible = (displacement) =>
+  displacement > 50 && displacement <= 125;
+
+/* ══════════════════════════════════════════════
    UI バインディング
    ══════════════════════════════════════════════ */
 
@@ -164,7 +232,17 @@ function getCurrentYear() {
   return new Date().getFullYear();
 }
 
+/* ── 現在の車種モード（'car' | 'motorcycle'）── */
+function currentVehicleType() {
+  const el = document.querySelector('input[name="vehicleType"]:checked');
+  return el ? el.value : 'car';
+}
+
 function calcAndRender() {
+  if (currentVehicleType() === 'motorcycle') {
+    calcAndRenderMotorcycle();
+    return;
+  }
   const category = $('category').value;
   const displacement = parseInt($('displacement').value, 10) || 0;
   const fuelType = $('fuelType').value;
@@ -252,6 +330,71 @@ function updateRotaryVisibility() {
   if (!eligible) $('isRotary').checked = false;
 }
 
+/* ── バイクモードの計算・描画 ── */
+function calcAndRenderMotorcycle() {
+  const displacement = parseInt($('m-displacement').value, 10) || 0;
+  const registrationYear = parseInt($('m-registrationYear').value, 10) || getCurrentYear();
+  const isNewStandardMoped = $('m-newStandardMoped').checked && isNewStandardMopedEligible(displacement);
+
+  const carAge = Math.max(0, getCurrentYear() - registrationYear);
+  const subCategory = motorcycleSubCategory(displacement);
+
+  const tax = motorcycleTax({ subCategory, displacement, isNewStandardMoped });
+  const weightTax2y = motorcycleWeightTax({ subCategory, carAge, isFirstRegistration: false });
+  const weightTaxAnnual = Math.round(weightTax2y / 2);
+
+  // 小型二輪のみ重量税が発生。原付・軽二輪は車検がないため重量税なし。
+  const hasWeightTax = subCategory === 'smallMotorcycle';
+  const total = tax + weightTaxAnnual;
+
+  $('mr-total').textContent = yen(total);
+  $('mr-tax').textContent = yen(tax);
+
+  // 種別割の区分注記
+  const subLabels = {
+    mopedClass1: '原付一種（〜50cc）',
+    mopedClass2: isNewStandardMoped
+      ? '原付二種ナンバー → 新基準原付（原付一種扱い）'
+      : (displacement <= 90 ? '原付二種 乙（51〜90cc）' : '原付二種 甲（91〜125cc）'),
+    lightMotorcycle: '軽二輪（126〜250cc・車検なし）',
+    smallMotorcycle: '小型二輪（251cc〜・車検あり）',
+  };
+  $('mr-tax-note').textContent = subLabels[subCategory] || '';
+
+  // 重量税行は小型二輪のみ表示
+  const weightRow = $('mr-weight-row');
+  if (weightRow) weightRow.style.display = hasWeightTax ? '' : 'none';
+  if (hasWeightTax) {
+    $('mr-weighttax').textContent = yen(weightTaxAnnual);
+    let wNote = '車検時に2年分を一括支払い';
+    if (carAge >= 18) wNote += '（18年超の重課）';
+    else if (carAge >= 13) wNote += '（13年超の重課）';
+    $('mr-weighttax-note').textContent = wNote;
+  }
+
+  // 新基準原付トグル行の表示制御（51〜125cc のみ）
+  const nsmRow = $('m-row-newStandard');
+  if (nsmRow) nsmRow.style.display = isNewStandardMopedEligible(displacement) ? '' : 'none';
+  if (!isNewStandardMopedEligible(displacement)) $('m-newStandardMoped').checked = false;
+}
+
+/* ── 車種モード切替（自動車 ⇄ バイク）── */
+function onVehicleTypeChange() {
+  const type = currentVehicleType();
+  const carForm = $('car-fields');
+  const motoForm = $('moto-fields');
+  const carResult = $('result');
+  const motoResult = $('result-moto');
+
+  const isMoto = type === 'motorcycle';
+  if (carForm) carForm.style.display = isMoto ? 'none' : '';
+  if (motoForm) motoForm.style.display = isMoto ? '' : 'none';
+  if (carResult) carResult.style.display = isMoto ? 'none' : '';
+  if (motoResult) motoResult.style.display = isMoto ? '' : 'none';
+
+  calcAndRender();
+}
+
 /* ── 初期化 ── */
 document.addEventListener('DOMContentLoaded', () => {
   ['category','displacement','fuelType','maxPayload','registrationYear','registrationMonth','weight','isRotary'].forEach((id) => {
@@ -263,6 +406,20 @@ document.addEventListener('DOMContentLoaded', () => {
   $('category').addEventListener('change', onCategoryChange);
   // 燃料種別の変更でもロータリー行の表示可否が変わる
   $('fuelType').addEventListener('change', updateRotaryVisibility);
+
+  // バイクモードの入力
+  ['m-displacement','m-registrationYear','m-newStandardMoped'].forEach((id) => {
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener('input', calcAndRender);
+    el.addEventListener('change', calcAndRender);
+  });
+
+  // 車種トグル（自動車 / バイク）
+  document.querySelectorAll('input[name="vehicleType"]').forEach((el) => {
+    el.addEventListener('change', onVehicleTypeChange);
+  });
+
   onCategoryChange();
-  calcAndRender();
+  onVehicleTypeChange();
 });
