@@ -75,8 +75,17 @@ const isExemptFromAgeSurcharge = isEVBased;
 const isPreOct2019 = (year, month) =>
   year < 2019 || (year === 2019 && month <= 9);
 
+/* ── ロータリー排気量換算 ──
+   ロータリーは「単室容積 × ローター数 × 1.5」で算出した値を総排気量として税率を決定。
+   例: RX-8 13B型 1,308cc → 1,962cc 扱い。普通乗用車のみ換算（軽は一律税額のため対象外）。
+   アプリ側 TaxCalculator.taxableDisplacement と同一ロジック。 */
+function taxableDisplacement(displacement, category, isRotary) {
+  if (!isRotary || category !== 'passenger') return displacement;
+  return Math.floor(displacement * 1.5);
+}
+
 /* ── 自動車税（年額） ── */
-function annualAutoTax({ category, displacement, fuelType, carAge, maxPayload, registrationYear, registrationMonth }) {
+function annualAutoTax({ category, displacement, fuelType, carAge, maxPayload, registrationYear, registrationMonth, isRotary }) {
   const pre2019 = isPreOct2019(registrationYear, registrationMonth);
 
   if (category === 'kei') {
@@ -104,8 +113,10 @@ function annualAutoTax({ category, displacement, fuelType, carAge, maxPayload, r
     return pre2019 ? TaxConstants.evTaxPre2019 : TaxConstants.evTaxPost2019;
   }
 
+  // ロータリーは実排気量×1.5で課税区分を判定。重課は燃料種別（ガソリン）基準のまま。
+  const effectiveCC = taxableDisplacement(displacement, 'passenger', isRotary);
   const table = pre2019 ? TaxConstants.autoTaxTablePre2019 : TaxConstants.autoTaxTablePost2019;
-  const entry = table.find(e => displacement <= e.maxCC);
+  const entry = table.find(e => effectiveCC <= e.maxCC);
 
   const surchargeThreshold = (fuelType === 'diesel') ? 11 : 13;
   if (carAge >= surchargeThreshold && !isExemptFromAgeSurcharge(fuelType)) {
@@ -161,12 +172,15 @@ function calcAndRender() {
   const registrationYear = parseInt($('registrationYear').value, 10) || 2022;
   const registrationMonth = parseInt($('registrationMonth').value, 10) || 1;
   const weight = parseInt($('weight').value, 10) || 1000;
+  // ロータリーは普通乗用車のガソリン系のみ有効
+  const rotaryEligible = category === 'passenger' && (fuelType === 'regular' || fuelType === 'highOctane');
+  const isRotary = rotaryEligible && $('isRotary').checked;
 
   const carAge = Math.max(0, getCurrentYear() - registrationYear);
 
   const autoTax = annualAutoTax({
     category, displacement, fuelType, carAge, maxPayload,
-    registrationYear, registrationMonth,
+    registrationYear, registrationMonth, isRotary,
   });
 
   const weightTax2y = weightTax2Year({ category, weight, fuelType, carAge });
@@ -186,7 +200,11 @@ function calcAndRender() {
   // Auto-tax note
   let note = '';
   const pre2019 = isPreOct2019(registrationYear, registrationMonth);
-  if (isEVBased(fuelType)) {
+  if (isRotary) {
+    const effectiveCC = taxableDisplacement(displacement, 'passenger', true);
+    note = `ロータリー特例：${displacement}cc → ${effectiveCC}cc 扱いで課税`;
+    if (carAge >= 13) note += '（13年超の重課適用）';
+  } else if (isEVBased(fuelType)) {
     note = '電気・PHEV・FCV は一律税額（経年重課の対象外）';
   } else if (category === 'kei') {
     if (carAge >= 13) note = '13年超の重課が適用されています';
@@ -220,18 +238,31 @@ function onCategoryChange() {
     rowPayload.style.display = 'none';
     $('displacement').parentElement.style.display = '';
   }
+  updateRotaryVisibility();
   calcAndRender();
+}
+
+/* ── ロータリー行の表示制御（普通乗用車かつガソリン系のみ） ── */
+function updateRotaryVisibility() {
+  const category = $('category').value;
+  const fuelType = $('fuelType').value;
+  const eligible = category === 'passenger' && (fuelType === 'regular' || fuelType === 'highOctane');
+  const row = $('row-rotary');
+  if (row) row.style.display = eligible ? '' : 'none';
+  if (!eligible) $('isRotary').checked = false;
 }
 
 /* ── 初期化 ── */
 document.addEventListener('DOMContentLoaded', () => {
-  ['category','displacement','fuelType','maxPayload','registrationYear','registrationMonth','weight'].forEach((id) => {
+  ['category','displacement','fuelType','maxPayload','registrationYear','registrationMonth','weight','isRotary'].forEach((id) => {
     const el = $(id);
     if (!el) return;
     el.addEventListener('input', calcAndRender);
     el.addEventListener('change', calcAndRender);
   });
   $('category').addEventListener('change', onCategoryChange);
+  // 燃料種別の変更でもロータリー行の表示可否が変わる
+  $('fuelType').addEventListener('change', updateRotaryVisibility);
   onCategoryChange();
   calcAndRender();
 });
