@@ -122,10 +122,56 @@ a:hover{opacity:.75}
     <p class="page-sub">新機能・改善・不具合修正のすべてをここに。ノリログは日々、車オーナーの声を聞きながら進化しています。</p>
   </header>
 
+  <!-- ═══════════════════ 1.3.0 ═══════════════════ -->
+  <section class="release">
+    <div class="release-meta">
+      <div class="release-version">1.3.0<span class="chip">Latest</span></div>
+      <div class="release-date">2026年8月11日</div>
+    </div>
+    <div class="release-content">
+      <h2 class="release-title">開かなくても、今月いくら。</h2>
+      <p class="release-lead">ホーム画面ウィジェットに対応しました。アプリを開かなくても今月の維持費がひと目で分かり、給油や洗車の記録もワンタップ。あわせて維持費の集計を見直し、これまで実際より多く表示されていた金額を正しく計算するようにしました。</p>
+
+      <div class="highlight">
+        <div class="highlight-eyebrow">Flagship Feature</div>
+        <h3>ホーム画面ウィジェット。</h3>
+        <p>愛車の今月の維持費を、ホーム画面でそのまま確認できます。給油・洗車・高速などの記録もウィジェットのボタンからワンタップで開けます。表示する項目は「今月の維持費」「平均燃費」「今月の走行距離」から選択可能。写真を登録していれば愛車の写真が背景になります。</p>
+      </div>
+
+      <div class="change-group">
+        <div class="change-label added">Added</div>
+        <ul>
+          <li><b>ホーム画面ウィジェット</b>— 小・中サイズとロック画面に対応。中サイズには記録ショートカットが並びます</li>
+          <li><b>表示項目を選択可能</b>— ウィジェットを長押し →「ウィジェットを編集」から、表示する車両と項目を変更できます（複数台の切り替えはライト/プロプラン）</li>
+          <li><b>ウィジェットの使い方ガイド</b>— 追加方法とカスタマイズ手順を「ツール」タブに追加しました</li>
+          <li><b>給油の合計金額を直接入力</b>— レシートの実額をそのまま記録できます</li>
+          <li><b>ガソリン単価が小数に対応</b>— 172.5円/L のような単価も正確に記録できます</li>
+        </ul>
+      </div>
+
+      <div class="change-group">
+        <div class="change-label fixed">Fixed</div>
+        <ul>
+          <li><b>保険や自動車税を更新したあと、更新前の金額が加算され続ける不具合を修正</b>— 契約期間を過ぎた古い記録は自動的に計上から外れます</li>
+          <li><b>月払いの任意保険が、支払った月に全額計上されるように</b>— これまでは年額として12分割されていました</li>
+          <li>ホーム・レポート・内訳グラフで、月割りの集計方法を統一しました</li>
+        </ul>
+      </div>
+
+      <div class="change-group">
+        <div class="change-label changed">Changed</div>
+        <ul>
+          <li><b>車検の費用を24ヶ月で月割り</b>するようにしました（車検の2年サイクルに合わせたため、月額はこれまでの約半分になります）</li>
+          <li>上記の修正により、これまで実際より多く表示されていた維持費が正しい金額になります。<b>金額が下がって見える場合がありますが、集計が正しくなったためです</b></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════════ 1.2.1 ═══════════════════ -->
   <section class="release">
     <div class="release-meta">
-      <div class="release-version">1.2.1<span class="chip">Latest</span></div>
+      <div class="release-version">1.2.1</div>
       <div class="release-date">2026年6月22日</div>
     </div>
     <div class="release-content">
